@@ -34,5 +34,9 @@
   "gachaaddiction.configuration.gachaa_screen.slot_machine.speed.speed_variance_min": "Min Random Speed Multiplier",
   "gachaaddiction.configuration.gachaa_screen.whitelist_filter_list": "Whitelist Filter",
   "gui.gachaaddiction.slot_machines.kip_hint": "Press SPACE to skip or ESC to open the container GUI directly",
-  "pack.gachaaddiction.description": "Gacha Addiction"
+  "pack.gachaaddiction.description": "Gacha Addiction",
+  "commands.gachaaddiction.gacha.invalid_type": "Invalid gacha type: %s",
+  "commands.gachaaddiction.gacha.invalid_loot_table": "Invalid loot table: %s",
+  "commands.gachaaddiction.gacha.success": "Executed %s times for %s players from loot table: %s",
+  "commands.gachaaddiction.gacha.error": "Error executing command: %s"
 }

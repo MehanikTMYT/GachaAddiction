@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class ClientPacketListenerMixin {
     @WrapOperation(method = "handleContainerContent",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;initializeContents(ILjava/util/List;Lnet/minecraft/world/item/ItemStack;)V"))
-    private void gachaaddiction$onHandleContainerContent(AbstractContainerMenu instance, int stateId, List<ItemStack> items, ItemStack carried, Operation<Void> original) {
+    private void gachaaddiction$handleContainerContent$initializeContents(AbstractContainerMenu instance, int stateId, List<ItemStack> items, ItemStack carried, Operation<Void> original) {
         original.call(instance, stateId, items, carried);
         Minecraft mc = Minecraft.getInstance();
         Screen screen = mc.screen;

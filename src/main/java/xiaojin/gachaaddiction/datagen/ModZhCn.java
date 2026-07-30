@@ -62,6 +62,12 @@ public class ModZhCn extends DatagenI18n {
         add(slotMachineConfig.exitMaxScale, "退出动画最大放大倍率");
         add(slotMachineConfig.passSoundEffects, "拨片音效");
         add(slotMachineConfig.passSoundEffectsOptimize, "拨片音效优化");
+
+        add("commands.gachaaddiction.invalid_type", "无效的抽奖类型: %s");
+        add("commands.gachaaddiction.invalid_loot_table", "无效的战利品表: %s");
+        add("commands.gachaaddiction.empty_loot_table", "战利品表为空: %s");
+        add("commands.gachaaddiction.success", "已为 %s 名玩家执行 %s 次战利品表: %s");
+        add("commands.gachaaddiction.error", "执行命令时出错: %s");
     }
 
     public static void addI18nSoundEventText(String zhName, Supplier<? extends SoundEvent> supplier) {

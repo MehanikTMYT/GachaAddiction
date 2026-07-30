@@ -3,9 +3,6 @@ package xiaojin.gachaaddiction.mixin.lootr;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import noobanidus.mods.lootr.common.api.data.inventory.ILootrInventory;
 import noobanidus.mods.lootr.common.data.LootrInventory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +28,7 @@ public abstract class LootrInventoryMixin implements ILootrInventory, IILootrInv
     }
 
     @Inject(method = "saveToTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ContainerHelper;saveAllItems(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/core/NonNullList;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/nbt/CompoundTag;"))
-    private void gachaaddiction$saveToTag(HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir, @Local(name = "result") CompoundTag result) {
+    private void gachaaddiction$saveToTag$saveAllItems(HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir, @Local(name = "result") CompoundTag result) {
         result.putBoolean("gachaaddiction$isOpen", gachaaddiction$isOpen);
     }
 }

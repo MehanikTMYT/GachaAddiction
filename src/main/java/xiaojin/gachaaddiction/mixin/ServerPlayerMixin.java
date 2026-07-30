@@ -36,9 +36,10 @@ public abstract class ServerPlayerMixin extends Player {
     }
 
     @Inject(method = "lambda$openMenu$15", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/MenuProvider;writeClientSideData(Lnet/minecraft/world/inventory/AbstractContainerMenu;Lnet/minecraft/network/RegistryFriendlyByteBuf;)V"))
-    private static void gachaaddiction$openMenu(MenuProvider menu, AbstractContainerMenu abstractcontainermenu, Consumer<RegistryFriendlyByteBuf> extraDataWriter, RegistryFriendlyByteBuf buffer, CallbackInfo ci) {
+    private static void gachaaddiction$openMenu$writeClientSideData(MenuProvider menu, AbstractContainerMenu abstractcontainermenu, Consumer<RegistryFriendlyByteBuf> extraDataWriter, RegistryFriendlyByteBuf buffer, CallbackInfo ci) {
         if (!MenuProviderData.isLootrContainer(menu)) {
-            GachaaData.OPTIONAL_STREAM_CODEC.encode(buffer, Optional.of(new GachaaData(false, Optional.empty(), Optional.empty())));
+            // TODO 自定义GachaType
+            GachaaData.OPTIONAL_STREAM_CODEC.encode(buffer, Optional.of(new GachaaData(false, Optional.empty(), Optional.empty(), Optional.empty())));
             return;
         }
 
@@ -48,7 +49,7 @@ public abstract class ServerPlayerMixin extends Player {
 
     @WrapOperation(method = "openMenu(Lnet/minecraft/world/MenuProvider;Ljava/util/function/Consumer;)Ljava/util/OptionalInt;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/MenuProvider;createMenu(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"))
-    private AbstractContainerMenu gachaaddiction$openMenu(
+    private AbstractContainerMenu gachaaddiction$openMenu$createMenu(
             MenuProvider instance,
             int i,
             Inventory inventory,
@@ -62,7 +63,8 @@ public abstract class ServerPlayerMixin extends Player {
         IAbstractContainerMenu iMenu = IAbstractContainerMenu.of(menu);
         MenuProviderData data = MenuProviderData.create(instance);
         List<@Nullable ResourceKey<LootTable>> lootTableKey = data.lootTable();
-        iMenu.gachaaddiction$setGachaaData(new GachaaData(data.isOpenGachaaUi(), Optional.of(ModUtil.of(lootTableKey)), Optional.of(LootDisplayCache.get(lootTableKey))));
+        // TODO 自定义GachaType
+        iMenu.gachaaddiction$setGachaaData(new GachaaData(data.isOpenGachaaUi(), Optional.empty(), Optional.of(ModUtil.of(lootTableKey)), Optional.of(LootDisplayCache.get(lootTableKey))));
         MenuProviderData.open(instance);
         return menu;
     }

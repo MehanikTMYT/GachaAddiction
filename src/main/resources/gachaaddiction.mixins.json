@@ -19,7 +19,9 @@
     "ftb.FTBquestsNetClientMixin",
     "ftb.LootRewardMixin",
     "lootr.LootrInventoryMixin",
-    "lootr.LootrSavedDataMixin"
+    "lootr.LootrSavedDataMixin",
+    "treasurebags.LootContainerItemMixin",
+    "treasurebags.TreasureBagItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

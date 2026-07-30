@@ -42,13 +42,10 @@ public class Events {
         }
 
         // 接受类型
-        GachaType gachaType = GachaTypes.EMPTY;
+        GachaType gachaType = gachaaData.getGachaType();
 
         if (gachaType.isEmpty()) {
-            gachaType = GachaAddictionConfig.CLIENT.getDefaultGachaaType();
-            if (gachaType.isEmpty()) {
-                return;
-            }
+            return;
         }
 
         event.setNewScreen(gachaType.getClientData().create(screen, gachaaData));

@@ -19,7 +19,7 @@ import xiaojin.gachaaddiction.client.gui.screen.BasicGachaScreen;
 @Mixin(FTBQuestsNetClient.class)
 public abstract class FTBquestsNetClientMixin {
     @WrapOperation(method = "displayItemRewardToast", at = @At(value = "INVOKE", target = "Ldev/ftb/mods/ftbquests/client/gui/IRewardListenerScreen;add(Ldev/ftb/mods/ftbquests/client/gui/RewardKey;I)Z"))
-    private static boolean gachaaddiction$displayItemRewardToast(RewardKey key, int count, Operation<Boolean> original, @Local(argsOnly = true) ItemStack stack, @Share("isGacha") LocalBooleanRef isGacha) {
+    private static boolean gachaaddiction$displayItemRewardToast$add(RewardKey key, int count, Operation<Boolean> original, @Local(argsOnly = true) ItemStack stack, @Share("isGacha") LocalBooleanRef isGacha) {
         boolean call = original.call(key, count);
         BasicGachaScreen currentGuiAs = ClientUtils.getCurrentGuiAs(BasicGachaScreen.class);
         if (currentGuiAs == null) {

@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.IContainerFactory;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import xiaojin.gachaaddiction.api.GachaaData;
 import xiaojin.gachaaddiction.mixed.IAbstractContainerMenu;
@@ -25,8 +24,8 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> implements 
 
     @WrapOperation(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
             at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/network/IContainerFactory;create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"))
-    private T gachaaddiction$hookNeoForgeFactory(IContainerFactory<?> factory, int containerId, Inventory inventory, RegistryFriendlyByteBuf buf, Operation<T> original,
-                                                 @Share("processed") LocalBooleanRef processed) {
+    private T gachaaddiction$hookNeoForgeFactory$create(IContainerFactory<?> factory, int containerId, Inventory inventory, RegistryFriendlyByteBuf buf, Operation<T> original,
+                                                        @Share("processed") LocalBooleanRef processed) {
         processed.set(true);
         Optional<GachaaData> gachaaData = GachaaData.OPTIONAL_STREAM_CODEC.decode(buf);
         T menu = original.call(factory, containerId, inventory, buf);
@@ -36,8 +35,8 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> implements 
 
     @WrapOperation(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/MenuType;create(ILnet/minecraft/world/entity/player/Inventory;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"))
-    private T gachaaddiction$hookVanillaFactory(MenuType<?> instance, int containerId, Inventory playerInventory, Operation<T> original,
-                                                @Share("processed") LocalBooleanRef processed, @Local(argsOnly = true) RegistryFriendlyByteBuf buf) {
+    private T gachaaddiction$hookVanillaFactory$create(MenuType<?> instance, int containerId, Inventory playerInventory, Operation<T> original,
+                                                       @Share("processed") LocalBooleanRef processed, @Local(argsOnly = true) RegistryFriendlyByteBuf buf) {
         // 避免重复读取
         if (processed.get()) {
             return original.call(instance, containerId, playerInventory);
