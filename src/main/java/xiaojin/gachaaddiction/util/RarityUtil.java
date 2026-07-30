@@ -17,7 +17,7 @@ public class RarityUtil {
         if (GachaAddiction.RARITYCORE_LOADED) {
             return RarityCoreUtil.getColor(itemStack);
         }
-
+        
         Rarity rarity = itemStack.getRarity();
         Integer color = rarity.color().getColor();
         if (color != null) {

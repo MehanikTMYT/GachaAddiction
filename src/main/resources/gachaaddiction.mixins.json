@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractContainerMenuMixin",
+    "AbstractMinecartContainerMixin",
     "ChestBlock_2_1Mixin",
-    "ChestBlock_2Mixin",
     "MenuTypeMixin",
+    "RandomizableContainerBlockEntityMixin",
     "ServerPlayerMixin",
     "accessor.LanguageProviderAccessor",
     "accessor.LootItemAccessor",
@@ -17,7 +18,6 @@
     "client.ClientPacketListenerMixin",
     "ftb.FTBquestsNetClientMixin",
     "ftb.LootRewardMixin",
-    "lootr.ILootrInventoryMixin",
     "lootr.LootrInventoryMixin",
     "lootr.LootrSavedDataMixin"
   ],

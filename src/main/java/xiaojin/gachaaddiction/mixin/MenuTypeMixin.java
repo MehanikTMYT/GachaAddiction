@@ -15,28 +15,22 @@ import net.neoforged.neoforge.network.IContainerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import xiaojin.gachaaddiction.api.GachaaData;
 import xiaojin.gachaaddiction.mixed.IAbstractContainerMenu;
-import xiaojin.gachaaddiction.api.ItemStackEntry;
-import xiaojin.gachaaddiction.util.ModUtil;
+
+import java.util.Optional;
 
 @Mixin(MenuType.class)
 public abstract class MenuTypeMixin<T extends AbstractContainerMenu> implements FeatureElement, IMenuTypeExtension<T> {
-
-    private record LootFlags(byte raw, boolean isRandomizable, boolean isInit, boolean hasLoot) {
-        static LootFlags read(RegistryFriendlyByteBuf buf) {
-            byte b = buf.readByte();
-            return new LootFlags(b, (b & 0b001) != 0, (b & 0b010) != 0, (b & 0b100) != 0);
-        }
-    }
 
     @WrapOperation(method = "create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;",
             at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/network/IContainerFactory;create(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/network/RegistryFriendlyByteBuf;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"))
     private T gachaaddiction$hookNeoForgeFactory(IContainerFactory<?> factory, int containerId, Inventory inventory, RegistryFriendlyByteBuf buf, Operation<T> original,
                                                  @Share("processed") LocalBooleanRef processed) {
         processed.set(true);
-        LootFlags flags = LootFlags.read(buf);
+        Optional<GachaaData> gachaaData = GachaaData.OPTIONAL_STREAM_CODEC.decode(buf);
         T menu = original.call(factory, containerId, inventory, buf);
-        gachaaddiction$$applyLootData(menu, flags, buf);
+        gachaaData.ifPresent(gachaaData1 -> IAbstractContainerMenu.of(menu).gachaaddiction$setGachaaData(gachaaData1));
         return menu;
     }
 
@@ -44,26 +38,14 @@ public abstract class MenuTypeMixin<T extends AbstractContainerMenu> implements 
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/MenuType;create(ILnet/minecraft/world/entity/player/Inventory;)Lnet/minecraft/world/inventory/AbstractContainerMenu;"))
     private T gachaaddiction$hookVanillaFactory(MenuType<?> instance, int containerId, Inventory playerInventory, Operation<T> original,
                                                 @Share("processed") LocalBooleanRef processed, @Local(argsOnly = true) RegistryFriendlyByteBuf buf) {
+        // 避免重复读取
         if (processed.get()) {
             return original.call(instance, containerId, playerInventory);
         }
         processed.set(true);
-        LootFlags flags = LootFlags.read(buf);
+        Optional<GachaaData> gachaaData = GachaaData.OPTIONAL_STREAM_CODEC.decode(buf);
         T menu = original.call(instance, containerId, playerInventory);
-        gachaaddiction$$applyLootData(menu, flags, buf);
+        gachaaData.ifPresent(gachaaData1 -> IAbstractContainerMenu.of(menu).gachaaddiction$setGachaaData(gachaaData1));
         return menu;
-    }
-
-    @Unique
-    private static <T extends AbstractContainerMenu> void gachaaddiction$$applyLootData(T menu, LootFlags flags, RegistryFriendlyByteBuf buf) {
-        IAbstractContainerMenu iMenu = IAbstractContainerMenu.of(menu);
-        iMenu.gachaaddiction$setIsInit(!flags.isRandomizable() || flags.isInit());
-
-        if (!flags.isRandomizable() || flags.isInit() || !flags.hasLoot()) {
-            return;
-        }
-
-        iMenu.gachaaddiction$setLootTableKey(ModUtil.LOOT_TABLE_KEY_LIST_STREAM_CODEC.decode(buf));
-        iMenu.gachaaddiction$setDisplayEntries(ItemStackEntry.LIST_STREAM_CODEC.decode(buf));
     }
 }

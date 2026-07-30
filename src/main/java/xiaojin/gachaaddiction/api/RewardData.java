@@ -3,7 +3,6 @@ package xiaojin.gachaaddiction.api;
 import net.minecraft.world.item.ItemStack;
 import xiaojin.gachaaddiction.util.RarityUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class RewardData {
     private final ItemStack itemStack;
     private final int count;

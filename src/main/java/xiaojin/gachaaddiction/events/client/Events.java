@@ -7,15 +7,19 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import org.jetbrains.annotations.Nullable;
 import xiaojin.gachaaddiction.GachaAddiction;
 import xiaojin.gachaaddiction.GachaAddictionConfig;
 import xiaojin.gachaaddiction.api.GachaType;
+import xiaojin.gachaaddiction.api.GachaaData;
 import xiaojin.gachaaddiction.init.GachaTypes;
 import xiaojin.gachaaddiction.mixed.IAbstractContainerMenu;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
 import xiaojin.gachaaddiction.registry.GachaaAdictionConfigData;
 import xiaojin.gachaaddiction.util.ModUtil;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @EventBusSubscriber(modid = GachaAddiction.MODID, value = Dist.CLIENT)
@@ -27,10 +31,13 @@ public class Events {
             return;
         }
 
-        IAbstractContainerMenu iMenu = IAbstractContainerMenu.of(menuAccess.getMenu());
-        boolean isInit = iMenu.gachaaddiction$isInit();
+        @Nullable GachaaData gachaaData = IAbstractContainerMenu.of(menuAccess.getMenu()).gachaaddiction$getGachaaData();
+        if (gachaaData == null) {
+            return;
+        }
+        boolean isOpenGachaaUi = gachaaData.isOpenGachaaUi();
 
-        if (isInit) {
+        if (!isOpenGachaaUi) {
             return;
         }
 
@@ -44,13 +51,7 @@ public class Events {
             }
         }
 
-        List<ItemStackEntry> entries = iMenu.gachaaddiction$getDisplayEntries();
-        if (entries.isEmpty()) {
-            return;
-        }
-
-        event.setNewScreen(gachaType.getClientData()
-                .create(screen, ModUtil.of(iMenu.gachaaddiction$getLootTableKey()), entries));
+        event.setNewScreen(gachaType.getClientData().create(screen, gachaaData));
     }
 
     @SubscribeEvent

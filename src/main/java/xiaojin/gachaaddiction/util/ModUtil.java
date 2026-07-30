@@ -9,10 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ModUtil {
+    public static final String OPEN_GACHAA_UI = "GachaAddiction:openGachaaUi";
+
     public static final StreamCodec<ByteBuf, ResourceKey<LootTable>> LOOT_TABLE_KEY_STREAM_CODEC =
             ResourceKey.streamCodec(Registries.LOOT_TABLE);
     public static final StreamCodec<ByteBuf, List<@Nullable ResourceKey<LootTable>>> LOOT_TABLE_KEY_LIST_STREAM_CODEC =
@@ -28,6 +32,6 @@ public class ModUtil {
     }
 
     public static @NotNull List<ResourceLocation> of(List<@Nullable ResourceKey<LootTable>> lootTableResourceKey) {
-        return lootTableResourceKey.stream().map(ModUtil::of).toList();
+        return lootTableResourceKey.stream().map(ModUtil::of).filter(Objects::nonNull).toList();
     }
 }

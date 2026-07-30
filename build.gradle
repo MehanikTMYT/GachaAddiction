@@ -21,10 +21,12 @@ sourceSets.main.resources {
 boolean kubejs = true
 boolean ftb = true // FTB系列
 boolean onlyCompile = false // 仅编译
-boolean lootr = true
+boolean lootr = false
 boolean raritycore = false
 boolean colortooltips = false
 boolean confluence = false
+boolean clavis = true
+boolean treasurebags = true
 
 repositories {
     mavenLocal()
@@ -75,13 +77,6 @@ repositories {
         content { includeGroup "curse.maven" }
     }
 
-    exclusiveContent {
-        forRepository {
-            maven { url "https://cursemaven.com" }
-        }
-        filter { includeGroup "curse.maven" }
-    }
-
     // MixinSquared
     maven { url = 'https://maven.bawnorton.com/releases' }
 
@@ -125,7 +120,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 neoForge {
     version = project.neo_version
 
-parchment {
+    parchment {
         mappingsVersion = project.parchment_mappings_version
         minecraftVersion = project.parchment_minecraft_version
     }
@@ -182,11 +177,12 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     compileOnly "noobanidus.mods.lootr:lootr-neoforge:${lootr_version}"
-    compileOnly "maven.modrinth:raritycore:${raritycore_version}"
+
     compileOnly "maven.modrinth:colortooltips:${colortooltips_version}"
+    compileOnly "maven.modrinth:raritycore:${raritycore_version}"
+
     compileOnly "org.confluence.lib:Confluence-Magic-Lib:${confluence_lib_version}"
 
-    //compileOnly "dev.ftb.mods:ftb-chunks-forge-314906:6504893"
     compileOnly "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"
     compileOnly "dev.ftb.mods:ftb-library:${ftb_library_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
@@ -195,25 +191,24 @@ dependencies {
     compileOnly "dev.ftb.mods:ftb-quests:${ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-filter-system-neoforge:${ftb_filter_version}"
     compileOnly "dev.ftb.mods:ftb-filter-system:${ftb_filter_version}"
-//    compileOnly "dev.ftb.mods:ftb-xmod-compat-neoforge:${ftb_xmod_compat_version}"
     compileOnly "dev.ftb.mods:ftb-ultimine-neoforge:${ftb_ultimine_version}"
     compileOnly "dev.ftb.mods:ftb-ultimine:${ftb_ultimine_version}"
 
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
 
-    compileOnly "curse.maven:rhino-416294:7104526"
-    compileOnly "curse.maven:kubejs-238086:7278501"
+    compileOnly "curse.maven:kubejs-238086:${kubejs_version}"
+    compileOnly "curse.maven:rhino-416294:${rhino_version}"
 
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
 
+    compileOnly "curse.maven:clavis-1296431:${clavis_version}"
+    compileOnly "curse.maven:shatterbyte-lib-916747:${shatterbyte_lib_version}"
+
+//    compileOnly "maven.modrinth:treasurebags:${treasurebags_version}"
 
     if (!onlyCompile) {
         if (lootr) {
             runtimeOnly "noobanidus.mods.lootr:lootr-neoforge:${lootr_version}"
-        }
-
-        if (raritycore) {
-            runtimeOnly "maven.modrinth:raritycore:${raritycore_version}"
         }
 
         if (colortooltips) {
@@ -225,22 +220,39 @@ dependencies {
         }
 
         if (kubejs) {
-            runtimeOnly "curse.maven:rhino-416294:7104526"
-            runtimeOnly "curse.maven:kubejs-238086:7278501"
+            runtimeOnly "curse.maven:kubejs-238086:${kubejs_version}"
         }
 
         if (ftb) {
-            //runtimeOnly "dev.ftb.mods:ftb-chunks-forge-314906:6504893"
             runtimeOnly "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"
             runtimeOnly "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
             runtimeOnly "dev.ftb.mods:ftb-quests-neoforge:${ftb_quests_version}"
             runtimeOnly "dev.ftb.mods:ftb-filter-system-neoforge:${ftb_filter_version}"
-//            runtimeOnly "dev.ftb.mods:ftb-xmod-compat-neoforge:${ftb_xmod_compat_version}"
             runtimeOnly "dev.ftb.mods:ftb-ultimine-neoforge:${ftb_ultimine_version}"
+        }
+
+        if (clavis) {
+            runtimeOnly "curse.maven:clavis-1296431:${clavis_version}"
         }
 
         if (ftb) {
             runtimeOnly "dev.architectury:architectury-neoforge:${architectury_version}"
+        }
+
+        if (treasurebags){
+//            runtimeOnly "maven.modrinth:treasurebags:${treasurebags_version}"
+        }
+
+        if (raritycore || colortooltips) {
+            runtimeOnly "maven.modrinth:raritycore:${raritycore_version}"
+        }
+
+        if (clavis) {
+            runtimeOnly "curse.maven:shatterbyte-lib-916747:${shatterbyte_lib_version}"
+        }
+
+        if (kubejs) {
+            runtimeOnly "curse.maven:rhino-416294:${rhino_version}"
         }
     }
 

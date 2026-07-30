@@ -6,9 +6,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import xiaojin.gachaaddiction.api.GachaType;
+import xiaojin.gachaaddiction.api.GachaaData;
 import xiaojin.gachaaddiction.client.gui.screen.BasicGachaScreen;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GachaTypeClient<T extends GachaType, S extends BasicGachaScreen> {
@@ -18,6 +20,10 @@ public class GachaTypeClient<T extends GachaType, S extends BasicGachaScreen> {
     public GachaTypeClient(T gachaType, CreateScreen<S> createScreenFunction) {
         this.gachaType = gachaType;
         this.createScreenFunction = createScreenFunction;
+    }
+
+    public S create(Screen oldScreen, GachaaData gachaaData) {
+        return create(oldScreen, gachaaData.lootTableId().orElse(new ArrayList<>()), gachaaData.itemStackEntry().orElse(new ArrayList<>()));
     }
 
     public S create(Screen oldScreen, List<@Nullable ResourceLocation> lootTableId, List<ItemStackEntry> itemStackEntries) {
