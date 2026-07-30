@@ -81,6 +81,10 @@ public record MenuProviderData(
     }
 
     public static void open(MenuProvider menuProvider) {
+        if (GachaAddiction.LOOTR_LOADED && LootrUtil.isInstanceofILootrInventory(menuProvider)) {
+            LootrUtil.setOpen(menuProvider, true);
+        }
+
         if (menuProvider instanceof RandomizableContainerBlockEntity blockEntity) {
             IRandomizableContainerBlockEntity.of(blockEntity).gachaaddiction$setOpenGachaaUi(false);
         }

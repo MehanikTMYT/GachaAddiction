@@ -1,6 +1,7 @@
 package xiaojin.gachaaddiction.mixed;
 
 import noobanidus.mods.lootr.common.api.data.inventory.ILootrInventory;
+import noobanidus.mods.lootr.common.data.LootrInventory;
 
 public interface IILootrInventory {
     default boolean gachaaddiction$isOpen() {
@@ -10,7 +11,7 @@ public interface IILootrInventory {
     default void gachaaddiction$setOpen(boolean isOpen) {
     }
 
-    static IILootrInventory of(ILootrInventory inventory) {
+    static IILootrInventory of(LootrInventory inventory) {
         return (IILootrInventory) inventory;
     }
 }

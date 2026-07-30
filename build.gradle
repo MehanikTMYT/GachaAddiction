@@ -21,7 +21,7 @@ sourceSets.main.resources {
 boolean kubejs = true
 boolean ftb = true // FTB系列
 boolean onlyCompile = false // 仅编译
-boolean lootr = false
+boolean lootr = true
 boolean raritycore = false
 boolean colortooltips = false
 boolean confluence = false
@@ -204,7 +204,8 @@ dependencies {
     compileOnly "curse.maven:clavis-1296431:${clavis_version}"
     compileOnly "curse.maven:shatterbyte-lib-916747:${shatterbyte_lib_version}"
 
-//    compileOnly "maven.modrinth:treasurebags:${treasurebags_version}"
+    compileOnly "curse.maven:treasure-bags-318299:${treasurebags_version}"
+    compileOnly "curse.maven:silent-lib-242998:${silentlib_version}"
 
     if (!onlyCompile) {
         if (lootr) {
@@ -239,8 +240,12 @@ dependencies {
             runtimeOnly "dev.architectury:architectury-neoforge:${architectury_version}"
         }
 
-        if (treasurebags){
-//            runtimeOnly "maven.modrinth:treasurebags:${treasurebags_version}"
+        if (treasurebags) {
+            runtimeOnly "curse.maven:treasure-bags-318299:${treasurebags_version}"
+        }
+
+        if (treasurebags) {
+            runtimeOnly "curse.maven:silent-lib-242998:${silentlib_version}"
         }
 
         if (raritycore || colortooltips) {

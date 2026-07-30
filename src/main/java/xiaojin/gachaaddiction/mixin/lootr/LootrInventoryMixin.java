@@ -30,11 +30,6 @@ public abstract class LootrInventoryMixin implements ILootrInventory, IILootrInv
         this.gachaaddiction$isOpen = isOpen;
     }
 
-    @Inject(method = "createMenu", at = @At("HEAD"))
-    private void gachaaddiction$createMenu(int id, Inventory inventory, Player player, CallbackInfoReturnable<AbstractContainerMenu> cir) {
-        gachaaddiction$isOpen = true;
-    }
-
     @Inject(method = "saveToTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ContainerHelper;saveAllItems(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/core/NonNullList;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/nbt/CompoundTag;"))
     private void gachaaddiction$saveToTag(HolderLookup.Provider provider, CallbackInfoReturnable<CompoundTag> cir, @Local(name = "result") CompoundTag result) {
         result.putBoolean("gachaaddiction$isOpen", gachaaddiction$isOpen);
