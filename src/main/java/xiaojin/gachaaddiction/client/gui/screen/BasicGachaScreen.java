@@ -6,16 +6,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import xiaojin.gachaaddiction.GachaAddictionConfig;
+import xiaojin.gachaaddiction.config.GachaAddictionConfig;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
 import xiaojin.gachaaddiction.api.RewardData;
+import xiaojin.gachaaddiction.api.client.ReelHost;
 import xiaojin.gachaaddiction.config.ClientConfig;
 
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
-public abstract class BasicGachaScreen extends Screen {
+public abstract class BasicGachaScreen extends Screen implements ReelHost {
     protected final ClientConfig clientConfig = GachaAddictionConfig.CLIENT;
     protected final boolean isMerge = clientConfig.mergeItem.get();
     protected final boolean raritySorting = clientConfig.raritySorting.get();
@@ -137,6 +138,11 @@ public abstract class BasicGachaScreen extends Screen {
         if (!clientConfig.rewardSoundEffectsOptimize.get()) return true;
         if (completeSoundPlayedThisFrame) return false;
         completeSoundPlayedThisFrame = true;
+        return true;
+    }
+
+    @Override
+    public boolean tryClaimPassSound() {
         return true;
     }
 }

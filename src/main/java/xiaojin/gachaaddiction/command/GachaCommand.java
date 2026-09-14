@@ -22,23 +22,16 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.neoforge.network.PacketDistributor;
 import xiaojin.gachaaddiction.api.GachaType;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
-import xiaojin.gachaaddiction.init.GachaTypes;
+import xiaojin.gachaaddiction.registry.GachaTypes;
 import xiaojin.gachaaddiction.network.OpenGachaScreenPayload;
+import xiaojin.gachaaddiction.util.TranslationKeys;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author wang_
- * @version 2024.3.4.1
- * @description
- * @date 2026/7/30
- */
 public class GachaCommand {
-    public static final String COMMANDS_GACHAADDICTION_GACHA = "commands.gachaaddiction.gacha.";
-
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("gacha")
                 .requires(source -> source.hasPermission(1))
@@ -84,7 +77,7 @@ public class GachaCommand {
 
         GachaType gachaType = GachaTypes.get(typeId);
         if (gachaType == null) {
-            source.sendFailure(Component.translatable(COMMANDS_GACHAADDICTION_GACHA + "invalid_type", typeId.toString()));
+            source.sendFailure(Component.translatable(TranslationKeys.COMMANDS_GACHA_INVALID_TYPE, typeId.toString()));
             return 0;
         }
 
@@ -92,7 +85,7 @@ public class GachaCommand {
         var registry = level.getServer().reloadableRegistries().get().registryOrThrow(Registries.LOOT_TABLE);
         LootTable lootTable = registry.get(lootTableKey);
         if (lootTable == null || lootTable == LootTable.EMPTY) {
-            source.sendFailure(Component.translatable(COMMANDS_GACHAADDICTION_GACHA + "invalid_loot_table", lootTableLocation.toString()));
+            source.sendFailure(Component.translatable(TranslationKeys.COMMANDS_GACHA_INVALID_LOOT_TABLE, lootTableLocation.toString()));
             return 0;
         }
 
@@ -132,7 +125,7 @@ public class GachaCommand {
             ));
         }
 
-        source.sendSuccess(() -> Component.translatable(COMMANDS_GACHAADDICTION_GACHA + "success", targets.size(), count, lootTableLocation.toString()), true);
+        source.sendSuccess(() -> Component.translatable(TranslationKeys.COMMANDS_GACHA_SUCCESS, targets.size(), count, lootTableLocation.toString()), true);
         return count;
     }
 }

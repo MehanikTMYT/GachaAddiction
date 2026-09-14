@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 import xiaojin.gachaaddiction.GachaAddiction;
-import xiaojin.gachaaddiction.init.ModSoundEvents;
+import xiaojin.gachaaddiction.registry.sound.ModSoundEvents;
 import xiaojin.gachaaddiction.util.RarityUtil;
 
 import java.util.HashMap;
@@ -34,8 +34,6 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
             "^#[a-z0-9_.-]+:[a-z0-9_.-]+$");
     public static final Pattern ID_PATTERN = Pattern.compile(
             "^[a-z0-9_.-]+:[a-z0-9_.-]+$");
-    public static final Pattern OPERATOR_RARITY_PATTERN = Pattern.compile(
-            "^(>=|<=|>|<)?(-?\\d+)$");
     public static final Pattern RARITY_PATTERN = Pattern.compile(
             "^-?\\d+$");
     public static final GachaaAdictionConfigData INSTANCE = new GachaaAdictionConfigData();

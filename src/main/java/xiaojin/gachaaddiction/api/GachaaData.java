@@ -4,12 +4,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import xiaojin.gachaaddiction.GachaAddictionConfig;
-import xiaojin.gachaaddiction.init.GachaTypes;
+import xiaojin.gachaaddiction.config.GachaAddictionConfig;
+import xiaojin.gachaaddiction.registry.GachaTypes;
 import xiaojin.gachaaddiction.util.ModUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -3,25 +3,26 @@
   "package": "xiaojin.gachaaddiction.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractContainerMenuMixin",
-    "AbstractMinecartContainerMixin",
-    "ChestBlock_2_1Mixin",
-    "MenuTypeMixin",
-    "RandomizableContainerBlockEntityMixin",
-    "ServerPlayerMixin",
+    "entity.AbstractContainerMenuMixin",
+    "entity.AbstractMinecartContainerMixin",
+    "block.ChestBlock_2_1Mixin",
+    "entity.MenuTypeMixin",
+    "block.RandomizableContainerBlockEntityMixin",
+    "entity.ServerPlayerMixin",
     "accessor.LanguageProviderAccessor",
     "accessor.LootItemAccessor",
     "accessor.LootPoolAccessor",
     "accessor.LootPoolSingletonContainerAccessor",
     "accessor.LootTableAccessor",
-    "accessor.ModConfigSpecBuilderAccesor",
     "client.ClientPacketListenerMixin",
-    "ftb.FTBquestsNetClientMixin",
-    "ftb.LootRewardMixin",
-    "lootr.LootrInventoryMixin",
-    "lootr.LootrSavedDataMixin",
-    "treasurebags.LootContainerItemMixin",
-    "treasurebags.TreasureBagItemMixin"
+    "compat.ftb.FTBquestsNetClientMixin",
+    "compat.ftb.LootCrateItemMixin",
+    "compat.ftb.LootRewardMixin",
+    "compat.lootr.LootrInventoryMixin",
+    "compat.lootr.LootrSavedDataMixin",
+    "compat.treasurebags.LootContainerItemMixin",
+    "compat.treasurebags.TreasureBagItemMixin",
+    "compat.lootbundles.LootBundleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -30,8 +31,6 @@
     "requireAnnotations": true
   },
   "client": [
-    "accessor.ScreenAccessor",
-    "client.ConfigurationSectionScreenMixin",
     "client.MinecraftMixin"
   ],
   "mixinextras": {

@@ -3,7 +3,7 @@ package xiaojin.gachaaddiction.util;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import net.minecraft.resources.ResourceLocation;
 import xiaojin.gachaaddiction.api.GachaType;
-import xiaojin.gachaaddiction.init.GachaTypes;
+import xiaojin.gachaaddiction.registry.GachaTypes;
 
 public class FtbUtil {
     public static final NameMap<GachaType> NAME_MAP = NameMap.of(GachaTypes.EMPTY, GachaTypes.getLiat())

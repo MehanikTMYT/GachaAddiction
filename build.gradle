@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
     id 'idea'
+    id 'dev.mixinmcp.decompile' version "0.9.0"
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -15,6 +16,7 @@ group = mod_group_id
 sourceSets.main.resources {
     srcDir('src/generated/resources')
     exclude("**/*.bbmodel")
+    exclude("**/*.zip")
     exclude("src/generated/**/.cache")
 }
 
@@ -27,9 +29,17 @@ boolean colortooltips = false
 boolean confluence = false
 boolean clavis = true
 boolean treasurebags = true
+boolean lootbundles = true
+boolean ldlib2 = true
 
 repositories {
     mavenLocal()
+
+    maven {
+        name = "FirstDark"
+        url = "https://maven.firstdark.dev/snapshots"
+        content { includeGroup "com.lowdragmc.ldlib2" }
+    }
 
     maven {
         name = "Modrinth"
@@ -168,6 +178,7 @@ configurations {
 }
 
 dependencies {
+    compileOnly "com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all"
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${mixinsquared_version}"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:${mixinsquared_version}"))
     implementation "maven.modrinth:jade:${jade_version}+neoforge"
@@ -207,7 +218,12 @@ dependencies {
     compileOnly "curse.maven:treasure-bags-318299:${treasurebags_version}"
     compileOnly "curse.maven:silent-lib-242998:${silentlib_version}"
 
+    compileOnly "maven.modrinth:loot-bundles:${lootbundles_version}"
+
     if (!onlyCompile) {
+        if (ldlib2) {
+            runtimeOnly "com.lowdragmc.ldlib2:ldlib2-neoforge-${minecraft_version}:${ldlib2_version}:all"
+        }
         if (lootr) {
             runtimeOnly "noobanidus.mods.lootr:lootr-neoforge:${lootr_version}"
         }
@@ -248,6 +264,10 @@ dependencies {
             runtimeOnly "curse.maven:silent-lib-242998:${silentlib_version}"
         }
 
+        if (lootbundles) {
+            runtimeOnly "maven.modrinth:loot-bundles:${lootbundles_version}"
+        }
+
         if (raritycore || colortooltips) {
             runtimeOnly "maven.modrinth:raritycore:${raritycore_version}"
         }
@@ -273,7 +293,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
-            mod_description        : mod_description,
+            mod_description        : mod_description
     ]
     inputs.properties replaceProperties
     expand replaceProperties

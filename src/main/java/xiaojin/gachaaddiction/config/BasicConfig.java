@@ -1,65 +1,99 @@
 package xiaojin.gachaaddiction.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec.Builder;
-import xiaojin.gachaaddiction.GachaAddiction;
-import xiaojin.gachaaddiction.datagen.DatagenI18n;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.apache.commons.lang3.tuple.Pair;
-import xiaojin.gachaaddiction.mixin.accessor.ModConfigSpecBuilderAccesor;
+import xiaojin.gachaaddiction.GachaAddiction;
+import xiaojin.gachaaddiction.config.entry.*;
+import xiaojin.gachaaddiction.generator.lang.LangHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class BasicConfig {
     protected final String modId;
-    protected final Builder builder;
+    protected final ModConfigSpec.Builder builder;
+    protected final List<String> currentPath = new ArrayList<>();
+    protected final List<BasicConfigEntry<?>> entries = new ArrayList<>();
 
-    public BasicConfig(Builder builder) {
+    public BasicConfig(ModConfigSpec.Builder builder) {
         this.modId = GachaAddiction.MODID;
         this.builder = builder;
     }
 
-    protected ModConfigSpec.DoubleValue define(double defaultValue, double min, double max, String key, String... comment) {
-        return builder.comment(comment)
-                .translation(DatagenI18n.getConfigTranslation(modId, getCurrentPath(key)))
-                .defineInRange(key, defaultValue, min, max);
+    protected DoubleConfigEntry define(double defaultValue, double min, double max, String key, String... comment) {
+        return define(DoubleConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue).range(min, max));
     }
 
-    protected ModConfigSpec.IntValue define(int defaultValue, int min, int max, String key, String... comment) {
-        return builder.comment(comment)
-                .translation(DatagenI18n.getConfigTranslation(modId, getCurrentPath(key)))
-                .defineInRange(key, defaultValue, min, max);
+    protected IntConfigEntry define(int defaultValue, int min, int max, String key, String... comment) {
+        return define(IntConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue).range(min, max));
     }
 
-    protected ModConfigSpec.BooleanValue define(boolean defaultValue, String key, String... comment) {
-        return builder.comment(comment)
-                .translation(DatagenI18n.getConfigTranslation(modId, getCurrentPath(key)))
-                .define(key, defaultValue);
+    protected BooleanConfigEntry define(boolean defaultValue, String key, String... comment) {
+        return define(BooleanConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue));
     }
 
-    protected <T> Pair<T, ModConfigSpec> configure(Function<Builder, T> consumer) {
-        return new Builder().configure(consumer);
+    @SuppressWarnings("unused")
+    protected StringConfigEntry define(String defaultValue, String key, String... comment) {
+        return define(StringConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue));
     }
 
-    protected Builder push(String... key) {
-        builder.translation(DatagenI18n.getConfigTranslation(modId, getCurrentPath(key)));
-        return builder.push(Arrays.asList(key));
+    @SuppressWarnings("SameParameterValue")
+    protected <V> SelectorConfigEntry<V> selectorDefine(V defaultValue, List<V> allowedValues, String key,
+                                                        Function<String, V> decoding, Function<V, String> encode, String... comment) {
+        return define(SelectorConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue).allowedValues(allowedValues)
+                .codec(decoding, encode));
     }
 
-    protected Builder pop(int count) {
-        return builder.pop(count);
+    @SuppressWarnings("unused")
+    protected StringListConfigEntry defineList(List<? extends String> defaultValue, Predicate<Object> elementValidator,
+                                                String key, String... comment) {
+        return define(StringListConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue).elementValidator(elementValidator));
     }
 
-    protected Builder pop() {
-        return builder.pop();
+    protected FilterListConfigEntry defineFilterList(List<? extends List<String>> defaultValue,
+                                                      Predicate<Object> conditionValidator,
+                                                      String key, String... comment) {
+        return define(FilterListConfigEntry.builder(builder, modId, currentPath), entry -> entry
+                .key(key).comments(comment).defaultValue(defaultValue).conditionValidator(conditionValidator));
     }
 
-    protected String[] getCurrentPath(String... key) {
-        List<String> currentPath = new ArrayList<>();
-        currentPath.addAll(((ModConfigSpecBuilderAccesor) builder).getCurrentPath());
-        currentPath.addAll(Arrays.asList(key));
-        return currentPath.toArray(String[]::new);
+    private <E extends BasicConfigEntry<?>, B extends BasicConfigEntry.Builder<E, B>> E define(
+            B entryBuilder, Consumer<B> definition) {
+        definition.accept(entryBuilder);
+        return register(entryBuilder.build());
+    }
+
+    protected <T extends BasicConfigEntry<?>> T register(T entry) {
+        entries.add(entry);
+        return entry;
+    }
+
+    public List<BasicConfigEntry<?>> entries() {
+        return List.copyOf(entries);
+    }
+
+    protected void push(String key) {
+        builder.translation(LangHandler.getConfigTranslation(modId, getCurrentPath(key)));
+        currentPath.add(key);
+        builder.push(key);
+    }
+
+    protected void pop() {
+        currentPath.removeLast();
+        builder.pop();
+    }
+
+    protected String[] getCurrentPath(String key) {
+        List<String> path = new ArrayList<>(currentPath);
+        path.add(key);
+        return path.toArray(String[]::new);
     }
 }

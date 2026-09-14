@@ -10,10 +10,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xiaojin.gachaaddiction.GachaAddiction;
-import xiaojin.gachaaddiction.GachaAddictionConfig;
+import xiaojin.gachaaddiction.config.GachaAddictionConfig;
 import xiaojin.gachaaddiction.api.GachaType;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
-import xiaojin.gachaaddiction.init.client.GachaTypeClients;
+import xiaojin.gachaaddiction.registry.client.GachaTypeClients;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ public record OpenGachaScreenPayload(
         List<ResourceLocation> lootTableIds,
         List<ItemStackEntry> entries,
         List<ItemStack> rewards
-) implements CustomPacketPayload {
+) implements CustomPacketPayload, ToClientPayload {
 
     public static final CustomPacketPayload.Type<OpenGachaScreenPayload> TYPE = new CustomPacketPayload.Type<>(
             ResourceLocation.fromNamespaceAndPath(GachaAddiction.MODID, "open_gacha_screen"));

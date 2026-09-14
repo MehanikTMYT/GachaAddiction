@@ -5,8 +5,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import xiaojin.gachaaddiction.api.client.GachaTypeClient;
-import xiaojin.gachaaddiction.init.GachaTypes;
-import xiaojin.gachaaddiction.init.client.GachaTypeClients;
+import xiaojin.gachaaddiction.registry.GachaTypes;
+import xiaojin.gachaaddiction.registry.client.GachaTypeClients;
 import xiaojin.gachaaddiction.util.ModUtil;
 
 import java.util.Optional;

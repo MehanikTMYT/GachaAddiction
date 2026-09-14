@@ -1,5 +1,6 @@
 package xiaojin.gachaaddiction.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
@@ -10,16 +11,18 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xiaojin.gachaaddiction.api.RewardData;
+import xiaojin.gachaaddiction.api.client.ReelHost;
 import xiaojin.gachaaddiction.client.gui.widget.VerticalReelWidget;
 import xiaojin.gachaaddiction.api.ItemStackEntry;
 import xiaojin.gachaaddiction.config.ClientConfig;
+import xiaojin.gachaaddiction.util.TranslationKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class SlotMachineScreen extends BasicGachaScreen {
-    public static final String SKIP_HINT = "gui.gachaaddiction.slot_machines.kip_hint";
+    public static final String SKIP_HINT = TranslationKeys.GUI_SLOT_MACHINES_KIP_HINT;
     protected final ClientConfig.SlotMachineConfig slotMachineConfig = clientConfig.slotMachineConfig;
     private final List<VerticalReelWidget> verticalReelWidgets = new ArrayList<>();
     private int currentPage;
@@ -44,7 +47,7 @@ public class SlotMachineScreen extends BasicGachaScreen {
         clearReels();
         RandomSource random = RandomSource.create();
         for (RewardData data : rewards) {
-            verticalReelWidgets.add(createReelWidget(data, random));
+            verticalReelWidgets.add(createReelWidget(this, data, itemStackEntries, slotMachineConfig, random));
         }
         initReels();
     }
@@ -78,7 +81,21 @@ public class SlotMachineScreen extends BasicGachaScreen {
         return true;
     }
 
-    private VerticalReelWidget createReelWidget(RewardData data, RandomSource random) {
+    /**
+     * 创建单个转轮控件的共享工厂。
+     * <p>
+     * 供真实屏幕与配置界面预览面板复用，保证预览与实机生成转轮的逻辑完全一致。
+     *
+     * @param host             转轮宿主（真实屏幕或预览宿主）
+     * @param data             奖励数据
+     * @param entries          可抽取的物品池
+     * @param slotMachineConfig 老虎机配置
+     * @param random           随机源
+     */
+    public static VerticalReelWidget createReelWidget(ReelHost host, RewardData data,
+                                                      List<ItemStackEntry> entries,
+                                                      ClientConfig.SlotMachineConfig slotMachineConfig,
+                                                      RandomSource random) {
         int rarityLevel = data.getRarityLevel();
         int slotSize = slotMachineConfig.itemSlotSize.get();
         int decoyCount = 40;
@@ -92,14 +109,14 @@ public class SlotMachineScreen extends BasicGachaScreen {
             decoyCount += random.nextInt(0, slotSize);
         }
 
-        List<ItemStack> decoys = ItemStackEntry.generateGachaResult(itemStackEntries, decoyCount, random);
+        List<ItemStack> decoys = ItemStackEntry.generateGachaResult(entries, decoyCount, random);
 
         int resultIndex = decoys.size() > slotSize
                 ? random.nextInt(decoys.size() - slotSize) + slotSize
                 : Math.max(0, decoys.size() - 1);
 
         decoys.add(resultIndex, data.getItemStack().getItem().getDefaultInstance());
-        return new VerticalReelWidget(this, data, decoys, resultIndex);
+        return new VerticalReelWidget(host, data, decoys, resultIndex);
     }
 
     private void initializePage(int page) {
@@ -177,13 +194,15 @@ public class SlotMachineScreen extends BasicGachaScreen {
         Component text = Component.translatable(SKIP_HINT);
         float alpha = (float) ((Math.sin((blinkTicks + partialTick) * 0.15f) + 1.0) / 2.0);
         alpha = 0.3f + 0.7f * alpha;
-        guiGraphics.pose().pushPose();
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        // TODO 解决方块物品透明度问题
         guiGraphics.setColor(1, 1, 1, alpha);
-        guiGraphics.pose().translate(0, 0, 1000);
+        poseStack.translate(0, 0, 1000);
         guiGraphics.drawString(font, text, (width - font.width(text)) / 2, height - 30, 0xFFFFFF, true);
         guiGraphics.setColor(1, 1, 1, 1);
         guiGraphics.flush();
-        guiGraphics.pose().popPose();
+        poseStack.popPose();
     }
 
     @Override

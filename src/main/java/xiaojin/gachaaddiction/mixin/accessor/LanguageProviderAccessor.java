@@ -5,10 +5,11 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(value = LanguageProvider.class, remap = false)
+@Mixin(LanguageProvider.class)
 public interface LanguageProviderAccessor {
-    @Accessor
-    String getLocale();
-    @Accessor
-    PackOutput getOutput();
+    @Accessor("locale")
+    String gachaaddiction$getLocale();
+
+    @Accessor("output")
+    PackOutput gachaaddiction$getOutput();
 }

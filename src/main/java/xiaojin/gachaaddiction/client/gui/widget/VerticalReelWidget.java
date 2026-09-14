@@ -14,9 +14,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import xiaojin.gachaaddiction.GachaAddictionConfig;
+import xiaojin.gachaaddiction.config.GachaAddictionConfig;
 import xiaojin.gachaaddiction.api.RewardData;
-import xiaojin.gachaaddiction.client.gui.screen.SlotMachineScreen;
+import xiaojin.gachaaddiction.api.client.ReelHost;
 import xiaojin.gachaaddiction.config.ClientConfig;
 import xiaojin.gachaaddiction.registry.GachaaAdictionConfigData;
 
@@ -25,7 +25,7 @@ import java.util.List;
 public class VerticalReelWidget extends AbstractWidget {
     private final ClientConfig clientConfig = GachaAddictionConfig.CLIENT;
     private final ClientConfig.SlotMachineConfig slotMachineConfig = clientConfig.slotMachineConfig;
-    private final SlotMachineScreen slotMachineScreen;
+    private final ReelHost host;
     private final RewardData result;
     private final int resultColor;
     private final int resultLevel;
@@ -43,9 +43,9 @@ public class VerticalReelWidget extends AbstractWidget {
     private float minSpeed;
     private final RandomSource randomSource;
 
-    public VerticalReelWidget(SlotMachineScreen slotMachineScreen, RewardData result, List<ItemStack> decoys, int resultIndex) {
+    public VerticalReelWidget(ReelHost host, RewardData result, List<ItemStack> decoys, int resultIndex) {
         super(0, 0, 32, 32, Component.empty());
-        this.slotMachineScreen = slotMachineScreen;
+        this.host = host;
         this.result = result;
         this.decoys = decoys;
         this.resultIndex = resultIndex;
@@ -69,7 +69,7 @@ public class VerticalReelWidget extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.isHovered = isIsHovered(guiGraphics, mouseX, mouseY);
 
         tickAnimation(partialTick);
@@ -105,7 +105,7 @@ public class VerticalReelWidget extends AbstractWidget {
 
     private void tickAnimation(float partialTick) {
         if (exitStarted) {
-            exitProgress = Math.min(exitProgress + partialTick * slotMachineConfig.exitSpeed.get().floatValue(), 1f);
+        exitProgress = Math.min(exitProgress + partialTick * slotMachineConfig.exitSpeed.get().floatValue(), 1f);
         }
 
         if (complete) {
@@ -122,14 +122,14 @@ public class VerticalReelWidget extends AbstractWidget {
             float dist = -remaining;
             float speedMul = dist > decelZone ? 1f
                     : Math.max(minSpeed, dist / decelZone);
-            float move = partialTick * slotMachineConfig.itemsPerSecond.get().floatValue() * speedMul * speedMultiplier / 20f;
+        float move = partialTick * slotMachineConfig.itemsPerSecond.get().floatValue() * speedMul * speedMultiplier / 20f;
             visualOffset = Math.max(target, visualOffset - move);
         }
 
         if (slotMachineConfig.passSoundEffects.get()) {
             playPassSound();
         }
-        if (clientConfig.rewardSoundEffects.get()) {
+            if (clientConfig.rewardSoundEffects.get()) {
             playRewardSound(result.getCountItemStack());
         }
         if (complete && soundPlayed && !exitStarted) {
@@ -141,7 +141,7 @@ public class VerticalReelWidget extends AbstractWidget {
         int passedIndex = (int) Math.floor(-visualOffset);
         if (passedIndex == lastPassedIndex) return;
         lastPassedIndex = passedIndex;
-        if (!complete && slotMachineScreen.tryClaimPassSound()) {
+        if (!complete && host.tryClaimPassSound()) {
             getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
     }
@@ -149,10 +149,10 @@ public class VerticalReelWidget extends AbstractWidget {
     private void playRewardSound(ItemStack result) {
         if (!complete || soundPlayed) return;
         soundPlayed = true;
-        if (resultLevel < slotMachineScreen.getCurrentRenderHighestNewCompleteLevel()) {
+        if (resultLevel < host.getCurrentRenderHighestNewCompleteLevel()) {
             return;
         }
-        if (!slotMachineScreen.tryClaimCompleteSound()) {
+        if (!host.tryClaimCompleteSound()) {
             return;
         }
         getSoundManager().play(GachaaAdictionConfigData.getSoundEventsFunction().apply(result));
@@ -274,7 +274,7 @@ public class VerticalReelWidget extends AbstractWidget {
     }
 
     private @NotNull Minecraft getMinecraft() {
-        return slotMachineScreen.getMinecraft();
+        return host.getMinecraft();
     }
 
     @Override
