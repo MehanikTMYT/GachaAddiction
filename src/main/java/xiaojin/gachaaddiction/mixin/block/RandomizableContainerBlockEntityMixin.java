@@ -1,8 +1,8 @@
 package xiaojin.gachaaddiction.mixin.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
@@ -57,8 +57,8 @@ public abstract class RandomizableContainerBlockEntityMixin extends BaseContaine
     }
 
     @Inject(method = "removeComponentsFromTag", at = @At("RETURN"))
-    private void gachaaddiction$removeComponentsFromTag(CompoundTag tag, CallbackInfo ci) {
-        tag.remove(ModUtil.OPEN_GACHAA_UI);
+    private void gachaaddiction$removeComponentsFromTag(ValueOutput tag, CallbackInfo ci) {
+        tag.discard(ModUtil.OPEN_GACHAA_UI);
     }
 
     @Inject(method = "setLootTable", at = @At("HEAD"))
@@ -70,18 +70,14 @@ public abstract class RandomizableContainerBlockEntityMixin extends BaseContaine
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains(ModUtil.OPEN_GACHAA_UI)) {
-            this.gachaaddiction$isOpenGachaaUi = tag.getBoolean(ModUtil.OPEN_GACHAA_UI);
-        } else {
-            this.gachaaddiction$isOpenGachaaUi = false;
-        }
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
+        this.gachaaddiction$isOpenGachaaUi = tag.getBooleanOr(ModUtil.OPEN_GACHAA_UI, false);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         if (gachaaddiction$isOpenGachaaUi) {
             tag.putBoolean(ModUtil.OPEN_GACHAA_UI, true);
         }

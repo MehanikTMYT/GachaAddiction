@@ -1,4 +1,9 @@
 {
+  "sound.gachaaddiction.level0": "Gacha reward (0)",
+  "sound.gachaaddiction.level1": "Gacha reward (1)",
+  "sound.gachaaddiction.level2": "Gacha reward (2)",
+  "sound.gachaaddiction.level3": "Gacha reward (3)",
+  "sound.gachaaddiction.level4": "Gacha reward (4)",
   "ftbquests.reward.ftbquests.loot.gachaaddiction:gacha_type": "Gacha Style",
   "gacha_type.gachaaddiction:empty": "None",
   "gacha_type.gachaaddiction:slot_machine": "Slot Machine",

@@ -3,7 +3,8 @@ package xiaojin.gachaaddiction.mixin.entity;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,8 +17,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xiaojin.gachaaddiction.api.GachaaData;
 import xiaojin.gachaaddiction.mixed.IAbstractContainerMenu;
 import xiaojin.gachaaddiction.api.MenuProviderData;
@@ -31,20 +30,22 @@ import java.util.function.Consumer;
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
 
-    public ServerPlayerMixin(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
-        super(level, pos, yRot, gameProfile);
+    public ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
-    @Inject(method = "lambda$openMenu$15", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/MenuProvider;writeClientSideData(Lnet/minecraft/world/inventory/AbstractContainerMenu;Lnet/minecraft/network/RegistryFriendlyByteBuf;)V"))
-    private static void gachaaddiction$openMenu$writeClientSideData(MenuProvider menu, AbstractContainerMenu abstractcontainermenu, Consumer<RegistryFriendlyByteBuf> extraDataWriter, RegistryFriendlyByteBuf buffer, CallbackInfo ci) {
-        if (!MenuProviderData.isLootrContainer(menu)) {
-            // TODO 自定义GachaType
-            GachaaData.OPTIONAL_STREAM_CODEC.encode(buffer, Optional.of(new GachaaData(false, Optional.empty(), Optional.empty(), Optional.empty())));
-            return;
-        }
-
-        IAbstractContainerMenu iMenu = IAbstractContainerMenu.of(abstractcontainermenu);
-        GachaaData.OPTIONAL_STREAM_CODEC.encode(buffer, Optional.ofNullable(iMenu.gachaaddiction$getGachaaData()));
+    @WrapOperation(method = "openMenu(Lnet/minecraft/world/MenuProvider;Ljava/util/function/Consumer;)Ljava/util/OptionalInt;",
+            at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/common/util/FriendlyByteBufUtil;writeCustomData(Ljava/util/function/Consumer;Lnet/minecraft/core/RegistryAccess;)[B"))
+    private byte[] gachaaddiction$writeMenuData(Consumer<RegistryFriendlyByteBuf> dataWriter,
+                                               RegistryAccess registries, Operation<byte[]> original,
+                                               @Local AbstractContainerMenu menu) {
+        // Prepend our metadata without depending on a compiler-generated lambda name.
+        // The client MenuType mixin consumes this prefix before the provider's data.
+        GachaaData data = IAbstractContainerMenu.of(menu).gachaaddiction$getGachaaData();
+        return original.call((Consumer<RegistryFriendlyByteBuf>) buffer -> {
+            GachaaData.OPTIONAL_STREAM_CODEC.encode(buffer, Optional.ofNullable(data));
+            dataWriter.accept(buffer);
+        }, registries);
     }
 
     @WrapOperation(method = "openMenu(Lnet/minecraft/world/MenuProvider;Ljava/util/function/Consumer;)Ljava/util/OptionalInt;",
@@ -60,6 +61,9 @@ public abstract class ServerPlayerMixin extends Player {
             return original.call(instance, i, inventory, player);
         }
         AbstractContainerMenu menu = original.call(instance, i, inventory, player);
+        if (menu == null) {
+            return null;
+        }
         IAbstractContainerMenu iMenu = IAbstractContainerMenu.of(menu);
         MenuProviderData data = MenuProviderData.create(instance);
         List<@Nullable ResourceKey<LootTable>> lootTableKey = data.lootTable();

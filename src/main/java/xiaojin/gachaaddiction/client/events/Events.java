@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.jetbrains.annotations.Nullable;
 import xiaojin.gachaaddiction.GachaAddiction;
@@ -44,7 +44,7 @@ public class Events {
     }
 
     @SubscribeEvent
-    public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(GachaaAdictionConfigData.INSTANCE);
+    public static void onRegisterClientReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(net.minecraft.resources.Identifier.fromNamespaceAndPath(GachaAddiction.MODID, "reward_sounds"), GachaaAdictionConfigData.INSTANCE);
     }
 }

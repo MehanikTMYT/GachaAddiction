@@ -5,8 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import xiaojin.gachaaddiction.registry.GachaaAdictionConfigData;
+import net.minecraft.resources.Identifier;
+import xiaojin.gachaaddiction.util.GachaaPatterns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public final class FilterRuleParser {
             return false;
         }
         if (value.startsWith("#")) {
-            return GachaaAdictionConfigData.TAG_PATTERN.matcher(value).matches();
+            return GachaaPatterns.TAG_PATTERN.matcher(value).matches();
         }
         if (isRarityCondition(value)) {
             return !condition.startsWith("!");
@@ -55,10 +55,10 @@ public final class FilterRuleParser {
         return matcher.group(1) == null ? "=" : matcher.group(1);
     }
 
-    public static ItemParser.ItemResult parseItem(String value) {
+    public static net.minecraft.commands.arguments.item.ItemInput parseItem(String value) {
         StringReader reader = new StringReader(value);
         try {
-            ItemParser.ItemResult item = ITEM_PARSER.parse(reader);
+            net.minecraft.commands.arguments.item.ItemInput item = ITEM_PARSER.parse(reader);
             return reader.canRead() ? null : item;
         } catch (CommandSyntaxException ignored) {
             return null;
@@ -72,7 +72,7 @@ public final class FilterRuleParser {
     private static boolean isValidItemCondition(String value) {
         int componentsStart = value.indexOf('[');
         String itemId = componentsStart < 0 ? value : value.substring(0, componentsStart);
-        ResourceLocation id = ResourceLocation.tryParse(itemId);
+        Identifier id = Identifier.tryParse(itemId);
         if (id == null || itemId.isEmpty()) {
             return false;
         }

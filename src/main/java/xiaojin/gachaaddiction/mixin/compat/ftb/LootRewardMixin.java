@@ -2,7 +2,7 @@ package xiaojin.gachaaddiction.mixin.compat.ftb;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import dev.ftb.mods.ftblibrary.config.ConfigGroup;
+import dev.ftb.mods.ftblibrary.client.config.EditableConfigGroup;
 import dev.ftb.mods.ftbquests.client.gui.RewardNotificationsScreen;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.loot.RewardTable;
@@ -12,9 +12,9 @@ import dev.ftb.mods.ftbquests.quest.reward.LootReward;
 import dev.ftb.mods.ftbquests.quest.reward.RandomReward;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import de.marhali.json5.Json5Object;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -76,18 +76,18 @@ public abstract class LootRewardMixin extends RandomReward implements ILootRewar
     }
 
     @Override
-    public void writeData(CompoundTag nbt, HolderLookup.Provider provider) {
+    public void writeData(Json5Object nbt, HolderLookup.Provider provider) {
         super.writeData(nbt, provider);
         if (this.getTable() != null) {
-            nbt.putString("gachaaddiction:gacha_type", gachaaddiction$getGachaTypeIdString());
+            nbt.addProperty("gachaaddiction:gacha_type", gachaaddiction$getGachaTypeIdString());
         }
     }
 
     @Override
-    public void readData(CompoundTag nbt, HolderLookup.Provider provider) {
+    public void readData(Json5Object nbt, HolderLookup.Provider provider) {
         super.readData(nbt, provider);
         if (this.getTable() != null) {
-            gachaaddiction$gachaType = FtbUtil.byId(nbt.getString("gachaaddiction:gacha_type"));
+            gachaaddiction$gachaType = FtbUtil.byId(nbt.has("gachaaddiction:gacha_type") ? nbt.get("gachaaddiction:gacha_type").getAsString() : "gachaaddiction:empty");
         }
     }
 
@@ -104,7 +104,7 @@ public abstract class LootRewardMixin extends RandomReward implements ILootRewar
     }
 
     @Override
-    public void fillConfigGroup(ConfigGroup config) {
+    public void fillConfigGroup(EditableConfigGroup config) {
         super.fillConfigGroup(config);
         config.addEnum(GachaAddiction.MODID + ":gacha_type", gachaaddiction$gachaType,
                 (v) -> gachaaddiction$gachaType = v,
@@ -127,7 +127,7 @@ public abstract class LootRewardMixin extends RandomReward implements ILootRewar
     }
 
     @Override
-    public ResourceLocation gachaaddiction$getGachaTypeId() {
+    public Identifier gachaaddiction$getGachaTypeId() {
         return gachaaddiction$gachaType.getId();
     }
 }

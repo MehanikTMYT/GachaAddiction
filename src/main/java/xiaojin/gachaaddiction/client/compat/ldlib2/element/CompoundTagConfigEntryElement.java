@@ -22,7 +22,7 @@ public class CompoundTagConfigEntryElement extends FieldConfigEntryElement<Compo
     @Override
     public CompoundTag getValue() {
         try {
-            return TagParser.parseTag(getValueElement().getValue());
+            return TagParser.parseCompoundFully(getValueElement().getValue());
         } catch (Exception exception) {
             throw new IllegalStateException(exception);
         }

@@ -1,6 +1,7 @@
 package xiaojin.gachaaddiction.registry;
 
-import com.google.gson.Gson;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.util.ExtraCodecs;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
@@ -8,7 +9,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.sounds.SoundSource;
@@ -29,9 +30,8 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
-    public static final Pattern TAG_PATTERN = Pattern.compile(
-            "^#[a-z0-9_.-]+:[a-z0-9_.-]+$");
+public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener<JsonElement> {
+    public static final Pattern TAG_PATTERN = xiaojin.gachaaddiction.util.GachaaPatterns.TAG_PATTERN;
     public static final Pattern ID_PATTERN = Pattern.compile(
             "^[a-z0-9_.-]+:[a-z0-9_.-]+$");
     public static final Pattern RARITY_PATTERN = Pattern.compile(
@@ -42,7 +42,7 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
     private static Function<ItemStack, SimpleSoundInstance> soundEventsFunction;
 
     public GachaaAdictionConfigData() {
-        super(new Gson(), "gachaaadiction");
+        super(ExtraCodecs.JSON, FileToIdConverter.json("gachaaadiction"));
     }
 
     public static Function<ItemStack, SimpleSoundInstance> getSoundEventsFunction() {
@@ -50,7 +50,7 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+    protected void apply(Map<Identifier, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
         SoundManager soundManager = Minecraft.getInstance().getSoundManager();
         object.forEach((k, v) -> {
             String path = k.getPath();
@@ -87,7 +87,7 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
             }
 
             if (k.startsWith("#") && TAG_PATTERN.matcher(k).matches()) {
-                ResourceLocation key = ResourceLocation.parse(k.substring(1));
+                Identifier key = Identifier.parse(k.substring(1));
                 tagKeyMap.put(ItemTags.create(key), simpleSoundInstance);
                 continue;
             }
@@ -98,8 +98,8 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
             }
 
             if (ID_PATTERN.matcher(k).matches()) {
-                ResourceLocation key = ResourceLocation.parse(k);
-                Item item = BuiltInRegistries.ITEM.get(key);
+                Identifier key = Identifier.parse(k);
+                Item item = BuiltInRegistries.ITEM.getValue(key);
                 if (item == Items.AIR) {
                     continue;
                 }
@@ -128,7 +128,7 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
         };
     }
 
-    private static boolean hasSound(SoundManager soundManager, ResourceLocation v) {
+    private static boolean hasSound(SoundManager soundManager, Identifier v) {
         return soundManager.getSoundEvent(v) != null;
     }
 
@@ -143,14 +143,14 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
         return instance;
     }
 
-    private static SimpleSoundInstance createSimpleSoundInstance(ResourceLocation location, float pitch, float volume) {
+    private static SimpleSoundInstance createSimpleSoundInstance(Identifier location, float pitch, float volume) {
         return new SimpleSoundInstance(location, SoundSource.MASTER, volume, pitch, SoundInstance.createUnseededRandom(), false, 0, SoundInstance.Attenuation.NONE, 0.0, 0.0, 0.0, true);
     }
 
     @Nullable
     private static SimpleSoundInstance createSimpleSoundInstance(SoundManager soundManager, JsonElement element) {
         if (!element.isJsonObject()) {
-            ResourceLocation id = ResourceLocation.parse(element.getAsString());
+            Identifier id = Identifier.parse(element.getAsString());
             if (!hasSound(soundManager, id)) {
                 GachaAddiction.LOGGER.error("未找到id");
                 return null;
@@ -163,7 +163,7 @@ public class GachaaAdictionConfigData extends SimpleJsonResourceReloadListener {
             return null;
         }
 
-        ResourceLocation id = ResourceLocation.parse(object.get("id").getAsString());
+        Identifier id = Identifier.parse(object.get("id").getAsString());
         if (!hasSound(soundManager, id)) {
             GachaAddiction.LOGGER.error("未找到id为 {} 的音效", id);
             return null;

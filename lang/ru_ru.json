@@ -1,4 +1,9 @@
 {
+  "sound.gachaaddiction.level0": "Награда гачи (0)",
+  "sound.gachaaddiction.level1": "Награда гачи (1)",
+  "sound.gachaaddiction.level2": "Награда гачи (2)",
+  "sound.gachaaddiction.level3": "Награда гачи (3)",
+  "sound.gachaaddiction.level4": "Награда гачи (4)",
   "ftbquests.reward.ftbquests.loot.gachaaddiction:gacha_type": "Gacha Style",
   "gacha_type.gachaaddiction:empty": "Пусто",
   "gacha_type.gachaaddiction:slot_machine": "Слот-машина",

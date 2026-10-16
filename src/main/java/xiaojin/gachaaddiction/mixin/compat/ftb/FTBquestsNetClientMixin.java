@@ -6,10 +6,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftblibrary.util.client.ClientUtils;
+import dev.ftb.mods.ftblibrary.client.util.ClientUtils;
 import dev.ftb.mods.ftbquests.client.FTBQuestsNetClient;
 import dev.ftb.mods.ftbquests.client.NotificationStyle;
 import dev.ftb.mods.ftbquests.client.gui.RewardKey;
+import dev.ftb.mods.ftbquests.client.gui.IRewardListenerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +20,8 @@ import xiaojin.gachaaddiction.client.gui.screen.BasicGachaScreen;
 @Mixin(FTBQuestsNetClient.class)
 public abstract class FTBquestsNetClientMixin {
     @WrapOperation(method = "displayItemRewardToast", at = @At(value = "INVOKE", target = "Ldev/ftb/mods/ftbquests/client/gui/IRewardListenerScreen;add(Ldev/ftb/mods/ftbquests/client/gui/RewardKey;I)Z"))
-    private static boolean gachaaddiction$displayItemRewardToast$add(RewardKey key, int count, Operation<Boolean> original, @Local(argsOnly = true) ItemStack stack, @Share("isGacha") LocalBooleanRef isGacha) {
-        boolean call = original.call(key, count);
+    private static boolean gachaaddiction$displayItemRewardToast$add(IRewardListenerScreen receiver, RewardKey key, int count, Operation<Boolean> original, @Local(argsOnly = true) ItemStack stack, @Share("isGacha") LocalBooleanRef isGacha) {
+        boolean call = original.call(receiver, key, count);
         BasicGachaScreen currentGuiAs = ClientUtils.getCurrentGuiAs(BasicGachaScreen.class);
         if (currentGuiAs == null) {
             isGacha.set(false);

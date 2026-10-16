@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "xiaojin.gachaaddiction.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "entity.AbstractContainerMenuMixin",
     "entity.AbstractMinecartContainerMixin",
@@ -14,8 +14,6 @@
     "accessor.LootPoolAccessor",
     "accessor.LootPoolSingletonContainerAccessor",
     "accessor.LootTableAccessor",
-    "client.ClientPacketListenerMixin",
-    "compat.ftb.FTBquestsNetClientMixin",
     "compat.ftb.LootCrateItemMixin",
     "compat.ftb.LootRewardMixin",
     "compat.lootr.LootrInventoryMixin",
@@ -31,9 +29,12 @@
     "requireAnnotations": true
   },
   "client": [
-    "client.MinecraftMixin"
+    "client.MinecraftMixin",
+    "client.ClientPacketListenerMixin",
+    "compat.ftb.FTBquestsNetClientMixin"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
-  }
+  },
+  "plugin": "xiaojin.gachaaddiction.mixin.GachaMixinPlugin"
 }

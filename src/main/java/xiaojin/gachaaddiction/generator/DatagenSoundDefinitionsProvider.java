@@ -1,17 +1,16 @@
 package xiaojin.gachaaddiction.generator;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 import xiaojin.gachaaddiction.GachaAddiction;
 import xiaojin.gachaaddiction.registry.sound.ModSoundEvents;
 
 public class DatagenSoundDefinitionsProvider extends SoundDefinitionsProvider {
-    protected DatagenSoundDefinitionsProvider(PackOutput output, ExistingFileHelper helper) {
-        super(output, GachaAddiction.MODID, helper);
+    protected DatagenSoundDefinitionsProvider(PackOutput output) {
+        super(output, GachaAddiction.MODID);
     }
 
     @Override
@@ -28,7 +27,7 @@ public class DatagenSoundDefinitionsProvider extends SoundDefinitionsProvider {
     }
 
     private void add(SoundEvent soundEvent, int amount, float volume, float pitch, int weight, int attenuationDistance) {
-        ResourceLocation location = soundEvent.getLocation();
+        Identifier location = soundEvent.location();
         assert amount > 0 : "sound : " + location + " amount must be greater than 0";
 
         SoundDefinition definition = SoundDefinition.definition();
@@ -44,10 +43,10 @@ public class DatagenSoundDefinitionsProvider extends SoundDefinitionsProvider {
     }
 
     public static String getSubtitle(SoundEvent soundEvent) {
-        return getSubtitle(soundEvent.getLocation());
+        return getSubtitle(soundEvent.location());
     }
 
-    public static String getSubtitle(ResourceLocation location) {
+    public static String getSubtitle(Identifier location) {
         return "sound." + location.toLanguageKey();
     }
 }

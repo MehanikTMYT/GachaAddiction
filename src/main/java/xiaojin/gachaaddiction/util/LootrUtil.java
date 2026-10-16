@@ -3,7 +3,7 @@ package xiaojin.gachaaddiction.util;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.storage.loot.LootTable;
-import noobanidus.mods.lootr.common.api.data.inventory.ILootrInventory;
+import noobanidus.mods.lootr.common.api.interfaces.inventory.ILootrInventory;
 import noobanidus.mods.lootr.common.data.LootrInventory;
 import org.jetbrains.annotations.Nullable;
 import xiaojin.gachaaddiction.mixed.IILootrInventory;
@@ -16,7 +16,7 @@ public class LootrUtil {
 
     @Nullable
     public static ResourceKey<LootTable> getInfoLootTable(MenuProvider provider) {
-        return ((ILootrInventory) provider).getInfo().getInfoLootTable();
+        return ((ILootrInventory) provider).getData().getDataLootTable();
     }
 
     public static boolean isOpen(MenuProvider provider) {

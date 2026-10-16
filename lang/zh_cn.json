@@ -1,4 +1,9 @@
 {
+  "sound.gachaaddiction.level0": "抽奖奖励 (0)",
+  "sound.gachaaddiction.level1": "抽奖奖励 (1)",
+  "sound.gachaaddiction.level2": "抽奖奖励 (2)",
+  "sound.gachaaddiction.level3": "抽奖奖励 (3)",
+  "sound.gachaaddiction.level4": "抽奖奖励 (4)",
   "ftbquests.reward.ftbquests.loot.gachaaddiction:gacha_type": "抽卡样式",
   "gacha_type.gachaaddiction:empty": "无",
   "gacha_type.gachaaddiction:slot_machine": "老虎机",

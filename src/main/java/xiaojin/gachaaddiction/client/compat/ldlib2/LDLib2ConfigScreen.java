@@ -11,7 +11,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.*;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import com.lowdragmc.lowdraglib2.gui.util.TreeNode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.fml.ModContainer;
@@ -258,18 +258,18 @@ public class LDLib2ConfigScreen {
         }
 
         @Override
-        public void renderBackground(
-                @NotNull GuiGraphics guiGraphics,
+        public void extractBackground(
+                @NotNull GuiGraphicsExtractor guiGraphics,
                 int mouseX,
                 int mouseY,
                 float partialTick
         ) {
             if (this.minecraft != null && this.minecraft.level == null) {
-                this.renderPanorama(guiGraphics, partialTick);
+                this.extractPanorama(guiGraphics, partialTick);
             }
 
-            this.renderBlurredBackground(partialTick);
-            this.renderMenuBackground(guiGraphics);
+            this.extractBlurredBackground(guiGraphics);
+            this.extractMenuBackground(guiGraphics);
         }
     }
 }

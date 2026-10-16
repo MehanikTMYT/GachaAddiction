@@ -7,7 +7,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import cy.jdkdigital.lootbundles.item.LootBundle;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -44,7 +44,7 @@ public abstract class LootBundleMixin {
 
     @Inject(method = "use", at = @At("RETURN"))
     private void gachaaddiction$use$return(Level level, Player player, InteractionHand hand,
-                                           CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
+                                           CallbackInfoReturnable<InteractionResult> cir,
                                            @Share("gachaaddiction$allItems") LocalRef<List<ItemStack>> allItems) {
         if (level.isClientSide()) {
             return;

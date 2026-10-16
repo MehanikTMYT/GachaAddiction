@@ -2,13 +2,13 @@ package xiaojin.gachaaddiction.client.compat.ldlib2.element;
 
 import com.lowdragmc.lowdraglib2.editor.resource.IResourcePath;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
-public class ResourceLocationConfigEntryElement extends FieldConfigEntryElement<ResourceLocation> {
+public class ResourceLocationConfigEntryElement extends FieldConfigEntryElement<Identifier> {
     public ResourceLocationConfigEntryElement() {
         getValueElement().setResourceLocationOnly();
     }
@@ -19,8 +19,8 @@ public class ResourceLocationConfigEntryElement extends FieldConfigEntryElement<
     }
 
     @Override
-    public ResourceLocation getValue() {
-        return ResourceLocation.parse(getValueElement().getValue());
+    public Identifier getValue() {
+        return Identifier.parse(getValueElement().getValue());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ResourceLocationConfigEntryElement extends FieldConfigEntryElement<
     }
 
     @Override
-    public ResourceLocationConfigEntryElement setValue(ResourceLocation value) {
+    public ResourceLocationConfigEntryElement setValue(Identifier value) {
         getValueElement().setValue(value.toString());
         return this;
     }

@@ -114,7 +114,7 @@ public class SearchConfigEntryElement extends BasicConfigEntryElement<String> {
     private static List<String> createCandidates() {
         var values = new LinkedHashSet<String>();
         BuiltInRegistries.ITEM.keySet().forEach(id -> values.add(id.toString()));
-        BuiltInRegistries.ITEM.getTagNames().forEach(tag -> values.add(TAG_PREFIX + tag.location().toString()));
+        BuiltInRegistries.ITEM.listTagIds().forEach(tag -> values.add(TAG_PREFIX + tag.location().toString()));
         return List.copyOf(values);
     }
 

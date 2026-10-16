@@ -39,5 +39,7 @@ run/
 repo/
 !**/src/**/repo/
 
-/src/generated/
-/src/generated/
+
+# Keep generated language and sound assets; ignore datagen bookkeeping.
+/src/generated/resources/.cache/
+/graphify-out/

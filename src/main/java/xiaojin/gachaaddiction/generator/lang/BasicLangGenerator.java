@@ -120,7 +120,7 @@ public class BasicLangGenerator extends LanguageProvider {
      * 死亡消息翻译
      */
     protected void addDeathMessage(ResourceKey<DamageType> damageType, String name) {
-        add("death.attack." + damageType.location().getPath(), name);
+        add("death.attack." + damageType.identifier().getPath(), name);
     }
 
     /**
@@ -131,13 +131,13 @@ public class BasicLangGenerator extends LanguageProvider {
     }
 
     protected void add(SoundEvent damageType, String name) {
-        add("sound." + damageType.getLocation().toLanguageKey(), name);
+        add("sound." + damageType.location().toLanguageKey(), name);
     }
 
     /**
      * 玩家死亡消息翻译
      */
     protected void addPlayerDeathMessage(ResourceKey<DamageType> damageType, String name) {
-        add("death.attack." + damageType.location().getPath() + ".player", name);
+        add("death.attack." + damageType.identifier().getPath() + ".player", name);
     }
 }

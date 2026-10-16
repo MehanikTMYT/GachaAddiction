@@ -7,7 +7,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -35,7 +35,7 @@ public abstract class TreasureBagItemMixin {
     protected abstract ResourceKey<LootTable> getLootTable(ItemStack stack);
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Ljava/util/Collection;forEach(Ljava/util/function/Consumer;)V"))
-    private void gachaaddiction$use$forEach(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
+    private void gachaaddiction$use$forEach(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir,
                                             @Share("itemList") LocalRef<List<ItemStack>> itemList,
                                             @Local(name = "lootDrops") Collection<ItemStack> lootDrops) {
         itemList.set(new ArrayList<>());
@@ -43,7 +43,7 @@ public abstract class TreasureBagItemMixin {
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private void gachaaddiction$use$shrink(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir,
+    private void gachaaddiction$use$shrink(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir,
                                            @Share("itemList") LocalRef<List<ItemStack>> itemList,
                                            @Local(name = "heldItem") ItemStack heldItem) {
         if (itemList.get() == null) {
@@ -54,7 +54,7 @@ public abstract class TreasureBagItemMixin {
         // TODO 自定义GachaType
         PacketDistributor.sendToPlayer((ServerPlayer) player, new OpenGachaScreenPayload(
                 Optional.empty(),
-                List.of(lootTable.location()),
+                List.of(lootTable.identifier()),
                 LootDisplayCache.get(lootTable),
                 itemList.get()
         ));

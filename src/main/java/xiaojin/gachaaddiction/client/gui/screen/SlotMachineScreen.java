@@ -1,11 +1,11 @@
 package xiaojin.gachaaddiction.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class SlotMachineScreen extends BasicGachaScreen {
     private int blinkTicks;
     private boolean passSoundPlayedThisFrame;
 
-    public SlotMachineScreen(@Nullable Screen originalScreen, List<@Nullable ResourceLocation> lootTableId, List<ItemStackEntry> itemStackEntries) {
+    public SlotMachineScreen(@Nullable Screen originalScreen, List<@Nullable Identifier> lootTableId, List<ItemStackEntry> itemStackEntries) {
         super(Component.empty(), originalScreen, lootTableId, itemStackEntries);
     }
 
@@ -63,8 +63,9 @@ public class SlotMachineScreen extends BasicGachaScreen {
     }
 
     private void removeAllReelWidgets() {
-        children().removeIf(w -> w instanceof VerticalReelWidget);
-        renderables.removeIf(w -> w instanceof VerticalReelWidget);
+        for (VerticalReelWidget widget : verticalReelWidgets) {
+            removeWidget(widget);
+        }
     }
 
     private void clearReels() {
@@ -172,14 +173,12 @@ public class SlotMachineScreen extends BasicGachaScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTransparentBackground(guiGraphics);
-        guiGraphics.flush();
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        this.extractTransparentBackground(graphics);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (clientConfig.rewardSoundEffectsOptimize.get()) {
             currentRenderHighestNewCompleteLevel = verticalReelWidgets.stream()
                     .filter(w -> w.isComplete() && !w.hasPlayedSound())
@@ -189,20 +188,54 @@ public class SlotMachineScreen extends BasicGachaScreen {
             completeSoundPlayedThisFrame = false;
         }
         passSoundPlayedThisFrame = false;
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+
+        graphics.nextStratum();
+        renderReelFade(graphics);
 
         Component text = Component.translatable(SKIP_HINT);
         float alpha = (float) ((Math.sin((blinkTicks + partialTick) * 0.15f) + 1.0) / 2.0);
         alpha = 0.3f + 0.7f * alpha;
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        // TODO 解决方块物品透明度问题
-        guiGraphics.setColor(1, 1, 1, alpha);
-        poseStack.translate(0, 0, 1000);
-        guiGraphics.drawString(font, text, (width - font.width(text)) / 2, height - 30, 0xFFFFFF, true);
-        guiGraphics.setColor(1, 1, 1, 1);
-        guiGraphics.flush();
-        poseStack.popPose();
+        // 闪烁提示的 alpha 编码进 ARGB；26.1.2 已无 setColor
+        int color = 0x00FFFFFF | (Math.round(Math.clamp(alpha, 0f, 1f) * 255f) << 24);
+        graphics.nextStratum();
+        graphics.text(font, text, (width - font.width(text)) / 2, height - 30, color, true);
+    }
+
+    /**
+     * 滚轮上下两端的淡出。
+     * <p>
+     * 26.1.2 的物品绘制没有 alpha 参数，所以用渐变遮罩代替；横向铺满整个屏幕，
+     * 只在朝向中心的一侧留渐变——这样没有外边界，也就没有直角和硬边。
+     * min/max_alpha 仍然控制淡出的深浅。
+     */
+    private void renderReelFade(GuiGraphicsExtractor graphics) {
+        float itemSpacing = slotMachineConfig.itemSpacing.get().floatValue();
+        int visibleCount = slotMachineConfig.itemVisibleCount.get();
+        float maxAlpha = slotMachineConfig.itemMaxAlpha.get().floatValue();
+        float minAlpha = slotMachineConfig.itemMinAlpha.get().floatValue();
+
+        int edgeAlpha = Math.round(Math.clamp(maxAlpha - minAlpha, 0f, 1f) * 255f);
+        if (edgeAlpha <= 0) {
+            return;
+        }
+
+        int inner = Math.round(itemSpacing * 1.5f);
+        int outer = Math.round(visibleCount * itemSpacing);
+        if (outer <= inner) {
+            return;
+        }
+
+        int centerY = height / 2;
+        int opaque = edgeAlpha << 24;
+        int clear = 0;
+
+        // 上：屏幕顶到滚轮外沿铺满，再渐隐到中心区域
+        graphics.fill(0, 0, width, centerY - outer, opaque);
+        graphics.fillGradient(0, centerY - outer, width, centerY - inner, opaque, clear);
+        // 下：镜像
+        graphics.fillGradient(0, centerY + inner, width, centerY + outer, clear, opaque);
+        graphics.fill(0, centerY + outer, width, height, opaque);
     }
 
     @Override
@@ -216,10 +249,10 @@ public class SlotMachineScreen extends BasicGachaScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_SPACE && handleSpaceKey()) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == GLFW.GLFW_KEY_SPACE && handleSpaceKey()) {
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 }
