@@ -4,7 +4,7 @@
   "sound.gachaaddiction.level2": "Награда гачи (2)",
   "sound.gachaaddiction.level3": "Награда гачи (3)",
   "sound.gachaaddiction.level4": "Награда гачи (4)",
-  "ftbquests.reward.ftbquests.loot.gachaaddiction:gacha_type": "Gacha Style",
+  "ftbquests.reward.ftbquests.loot.gachaaddiction:gacha_type": "Стиль гачи",
   "gacha_type.gachaaddiction:empty": "Пусто",
   "gacha_type.gachaaddiction:slot_machine": "Слот-машина",
   "gachaaddiction.configuration.gachaa_screen": "Экран",
@@ -43,5 +43,18 @@
   "commands.gachaaddiction.gacha.invalid_type": "Недействительный тип рулетки: %s",
   "commands.gachaaddiction.gacha.invalid_loot_table": "Недействительная таблица лута: %s",
   "commands.gachaaddiction.gacha.success": "Выполнено %s раз для %s предметов из таблицы лута: %s",
-  "commands.gachaaddiction.gacha.error": "Ошибка при выполнении команды: %s"
+  "commands.gachaaddiction.gacha.error": "Ошибка при выполнении команды: %s",
+  "gui.gachaaddiction.config.back": "← Назад",
+  "gui.gachaaddiction.config.fullscreen.group.pool": "Пул предметов",
+  "gui.gachaaddiction.config.fullscreen.group.reel": "Барабаны",
+  "gui.gachaaddiction.config.fullscreen.options": "Настройки",
+  "gui.gachaaddiction.config.fullscreen.reel_restart": "Вращать заново",
+  "gui.gachaaddiction.config.index.categories": "Категории",
+  "gui.gachaaddiction.config.no_preview": "Предпросмотр для этого типа экрана недоступен",
+  "gui.gachaaddiction.config.preview.cycle.fullscreen": "Предпросмотр: на весь экран",
+  "gui.gachaaddiction.config.preview.cycle.off": "Предпросмотр: выкл",
+  "gui.gachaaddiction.config.preview.cycle.small": "Предпросмотр: маленький",
+  "gui.gachaaddiction.config.preview.pool": "Пул предметов (временно, не сохраняется)",
+  "gui.gachaaddiction.config.preview.pool.add": "Добавить",
+  "gui.gachaaddiction.config.preview.pool.reset": "Сбросить"
 }
