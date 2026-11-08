@@ -96,7 +96,6 @@ repositories {
         url = 'https://maven.blamejared.com'
         content {
             includeGroup 'noobanidus.mods.lootr'
-            includeGroup 'mezz.jei'
             includeGroup 'net.mezzdev.config'
         }
     }
@@ -104,7 +103,6 @@ repositories {
     maven {
         name = "ModMaven"
         url = uri("https://modmaven.dev")
-        content { includeGroup "mezz.jei" }
     }
 
 
@@ -132,13 +130,6 @@ repositories {
         content { includeGroup "org.confluence.lib" }
     }
 
-    maven {
-        // Shedaniel's maven (Architectury API)
-        url = "https://maven.architectury.dev"
-        content {
-            includeGroup "dev.architectury"
-        }
-    }
 
     maven {
         url "https://maven.ftb.dev/releases"
@@ -206,8 +197,6 @@ dependencies {
     compileOnly(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${mixinsquared_version}"))
     implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-neoforge:${mixinsquared_version}"))
     implementation "maven.modrinth:jade:${jade_version}+neoforge"
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     compileOnly "maven.modrinth:lootr:${lootr_version}"
     compileOnly "maven.modrinth:raritycore:${raritycore_version}"
     compileOnly "curse.maven:ftb-library-forge-404465:${ftb_library_file}"
@@ -220,7 +209,6 @@ dependencies {
 
     if (!onlyCompile) {
         runtimeOnly "com.lowdragmc.ldlib2:ldlib2-neoforge-${ldlib2_minecraft_version}:${ldlib2_version}"
-        runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
         runtimeOnly "maven.modrinth:lootr:${lootr_version}"
         runtimeOnly "maven.modrinth:raritycore:${raritycore_version}"
         runtimeOnly "curse.maven:ftb-library-forge-404465:${ftb_library_file}"
@@ -235,7 +223,6 @@ dependencies {
             runtimeOnly "maven.modrinth:kubejs:${kubejs_version}"
             runtimeOnly "maven.modrinth:rhino:${rhino_version}"
             runtimeOnly "maven.modrinth:better-advanced-tooltips:${better_tooltips_version}"
-            runtimeOnly "maven.modrinth:architectury-api:${architectury_version}"
             runtimeOnly "maven.modrinth:shatterbyte-lib:${shatterbyte_lib_version}"
             runtimeOnly "curse.maven:ftb-filter-system-943925:${ftb_filter_file}"
             runtimeOnly "curse.maven:ftb-ultimine-forge-386134:${ftb_ultimine_file}"

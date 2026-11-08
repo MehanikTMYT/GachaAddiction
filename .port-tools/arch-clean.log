@@ -1,0 +1,30 @@
+Starting a Gradle Daemon, 4 incompatible Daemons could not be reused, use --status for details
+Calculating task graph as configuration cache cannot be reused because file 'gradle.properties' has changed.
+
+1 problem was found storing the configuration cache.
+- Task `:createMinecraftArtifacts` of type `net.neoforged.nfrtgradle.CreateMinecraftArtifacts`: error writing value of type 'org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection'
+
+See the complete report at file:///root/home/forks/GachaAddiction/build/reports/configuration-cache/5kxbki1641w3j3wvq391jsyn0/39e81wunn06b4ukiv8g6oc3u9/configuration-cache-report.html
+
+[Incubating] Problems report is available at: file:///root/home/forks/GachaAddiction/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Configuration cache state could not be cached: field `__accessTransformers__` of task `:createMinecraftArtifacts` of type `net.neoforged.nfrtgradle.CreateMinecraftArtifacts`: error writing value of type 'org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection'
+> You must specify a URL for a Maven repository.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 21s
+Configuration cache entry discarded due to serialization error.
